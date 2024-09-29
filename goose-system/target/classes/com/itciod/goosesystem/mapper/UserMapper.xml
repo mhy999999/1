@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itciod.goosesystem.mapper.UserMapper">
+    <update id="update">
+        update goose_user_table
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="identity != null ">
+                `identity` = #{identity},  <!-- 关键字冲突 -->
+
+            </if>
+            <if test="androidstaue != null ">
+                androidstaue = #{androidstaue},
+            </if>
+            <if test="androidkey != null ">
+                androidkey = #{androidkey}
+            </if>
+        </set>
+        where user_id = #{userId}
+
+    </update>
+
+    <insert id="insert">
+        insert into goose_user_table
+        (
+        username,
+        password,
+        identity,
+        androidstaue
+        <if test="androidkey != null and androidkey != ''">
+            , androidkey  <!-- 如果 androidkey 不为空，则插入该字段 -->
+        </if>
+        )
+        values
+        (
+        #{username},
+        #{password},
+        #{identity},
+        #{androidstaue}
+        <if test="androidkey != null and androidkey != ''">
+            , #{androidkey}  <!-- 如果 androidkey 不为空，则插入该值 -->
+        </if>
+        )
+    </insert>
+
+
+<select id="batchSelect" parameterType="java.util.List" resultType="com.itciod.goosesystem.pojo.User">
+    select *
+    from goose_user_table
+    where user_id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+    </foreach>
+</select>
+
+<delete id="batchDelete">
+    delete from goose_user_table
+    where user_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+        #{item}
+    </foreach>
+</delete>
+
+
+
+
+
+
+
+
+
+
+</mapper>
+
